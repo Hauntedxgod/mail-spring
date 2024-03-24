@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Title of Page with all book</title>
 </head>
+
 <body>
+<p align="center">All mail organization</p>
+<br/>
+<div th:each="eachEmail : ${allEmail}">
+    <a th:href="@{/email/{id} (id=${eachEmail.getId()})}"></a>
+    <input type="checkbox"  th:text="${eachEmail.getEmail}">
+</div>
+</br>
+</br>
+<input type="submit" value="Click to send mailing">
+
+
 
 </body>
 </html>

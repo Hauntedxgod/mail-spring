@@ -1,23 +1,19 @@
 package com.example.mailspring.service;
 
 
-import com.example.mailspring.repositories.EmailRepository;
 import com.example.mailspring.service.impl.EmailServiceImpl;
 import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class EmailService implements EmailServiceImpl {
 
 
@@ -28,20 +24,19 @@ public class EmailService implements EmailServiceImpl {
     private String fromEmail;
 
 
+    private final JavaMailSender javaMailSenderImpl;
 
-
-    private JavaMailSender javaMailSender;
-
-
-    public EmailService(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
+    @Autowired
+    public EmailService(JavaMailSenderImpl javaMailSenderImpl) {
+        this.javaMailSenderImpl = javaMailSenderImpl;
     }
+
 
     @Override
     public String senMail(MultipartFile[] file, String to, String[] cc, String subject, String body) {
 
         try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessage mimeMessage = javaMailSenderImpl.createMimeMessage();
 
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage , true);
 
@@ -58,7 +53,7 @@ public class EmailService implements EmailServiceImpl {
                 );
             }
 
-            javaMailSender.send(mimeMessage);
+            javaMailSenderImpl.send(mimeMessage);
 
             return "mail send";
 
